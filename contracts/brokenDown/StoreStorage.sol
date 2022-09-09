@@ -49,7 +49,7 @@ contract StoreStorage {
         emit ItemAdded(productId, initQuantity);
     }
 
-    function restock(uint productId, uint quantity) public virtual{
+    function restock(uint productId, uint quantity) public virtual productExists(productId) nonZeroQuantity(quantity){
         products[productId].quantity += quantity;
         emit Restocked(productId, quantity);
     }

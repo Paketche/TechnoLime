@@ -21,6 +21,11 @@ contract StoreAccounting {
     event Purchased(uint purchaseId, uint productId, address client, uint quantity);
     event Refunded(uint purchseId, uint productId, address client, uint quantity);
 
+    modifier clientHasNotPurchasedProduct(uint productId) {
+        require(!clientToProductPurchaseMap[msg.sender][productId], "Already Purchased by client");        
+        _;
+    }
+
     function getPurchases() external view returns (Purchase[] memory){
         return purchases;
     }
@@ -46,12 +51,7 @@ contract StoreAccounting {
         productToPurchasersMap[productId].push(msg.sender);
 
         emit Purchased(purchaseId, productId, msg.sender, quantity);
-    }
-
-    modifier clientHasNotPurchasedProduct(uint productId) {
-        require(!clientToProductPurchaseMap[msg.sender][productId], "Already Purchased by client");        
-        _;
-    }
+    }    
 
     function refund(uint purchaseId) public virtual {
         require(purchases.length > purchaseId, "Purchase does not exists");
